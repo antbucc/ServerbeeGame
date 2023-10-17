@@ -1,0 +1,28 @@
+{
+  "name": "serverbeegame",
+  "version": "1.0.0",
+  "description": "backend for the BeeGame",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antbucc/ServerbeeGame.git"
+  },
+  "keywords": [
+    "BeeGame"
+  ],
+  "author": "Antonio Bucchiarone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antbucc/ServerbeeGame/issues"
+  },
+  "homepage": "https://github.com/antbucc/ServerbeeGame#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.1.0"
+  }
+}
