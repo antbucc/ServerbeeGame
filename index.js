@@ -21,11 +21,7 @@ connection.once('open', () => {
 // Create a MongoDB schema and model for a single game 
 const GameSchema = new mongoose.Schema({
     user: String,
-    savestate: {
-        flowerNumber: Number,
-        fishNumber: Number,
-        tutorialComplete: Boolean,
-    },
+    savestate: String
 });
 
 const GameModel = mongoose.model('Game', GameSchema);
@@ -33,7 +29,7 @@ const GameModel = mongoose.model('Game', GameSchema);
 // Middleware to parse JSON data from the request body
 app.use(bodyParser.json());
 
-// Create a POST endpoint to save user data
+// POST endpoint to save user data
 app.post('/api/games', async (req, res) => {
     const { user, savestate } = req.body;
 
@@ -55,7 +51,7 @@ app.get("/", (req, res) => {
     res.send("Welcome to Bee Game!");
 });
 
-// Create a GET endpoint to retrieve games
+// GET endpoint to retrieve games
 app.get('/api/games', async (req, res) => {
     try {
         const games = await GameModel.find(); // Retrieve all games
@@ -64,6 +60,26 @@ app.get('/api/games', async (req, res) => {
         return res.status(500).json({ error: 'Failed to retrieve games.' });
     }
 });
+
+
+//GET endpoint to retrieve a user's savestate by ID
+app.get('/api/games/:user', async (req, res) => {
+    const user = req.params.user;
+    if (!user) {
+        return res.status(400).json({ error: 'User ID is required.' });
+    }
+    try {
+        const states = await GameModel.find({ user });
+        console.log("STATES: " + states.length);
+        if (states.length === 0) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+        return res.status(200).json(states[0].savestate);
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to retrieve user savestate.' });
+    }
+});
+
 
 // Start the server
 app.listen(port, () => {
