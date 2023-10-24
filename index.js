@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
+const { bool } = require("jshint/src/options");
 require("dotenv").config();
 
 const app = express();
@@ -18,33 +19,65 @@ connection.once('open', () => {
     console.log("Connected Database Successfully");
 });
 
+const subjectData = new mongoose.Schema({
+    userID: String,
+    fishNumber: Number,
+    flowerNumber: Number,
+    goodActions: Number,
+    badActions: Number,
+    preAnswers: [Number],
+    postAnswers: [Number],
+    numberOfParagraphsRead: Number,
+    readingTimes: [Number],
+    readingTimePerParagraph: Number,
+    knowledgeIndex: Number,
+    tutorialDone: Boolean,
+    finished: Boolean,
+    language: String,
+});
+
 // Create a MongoDB schema and model for a single game 
 const GameSchema = new mongoose.Schema({
     user: String,
-    savestate: String
+    savestate: String,
+    subjectData: subjectData
 });
+
 
 const GameModel = mongoose.model('Game', GameSchema);
 
 // Middleware to parse JSON data from the request body
 app.use(bodyParser.json());
 
-// POST endpoint to save user data
+// POST endpoint to save game data for a user
 app.post('/api/games', async (req, res) => {
-    const { user, savestate } = req.body;
+    const { user, savestate, subjectData } = req.body;
 
-    if (!user || !savestate) {
-        return res.status(400).json({ error: 'Both user and savestate are required.' });
+    if (!user || !savestate || !subjectData) {
+        return res.status(400).json({ error: 'user, savestate and subjectData are required.' });
     }
 
     try {
-        const newGame = new GameModel({ user, savestate });
-        await newGame.save();
-        return res.status(201).json(newGame);
+        // Check if a user with the same identifier already exists
+        const existingGame = await GameModel.findOne({ user: user });
+
+        if (existingGame) {
+            // If the user exists, update the existing record
+            existingGame.savestate = savestate;
+            existingGame.subjectData = subjectData;
+            await existingGame.save();
+            return res.status(200).json(existingGame);
+        } else {
+            // If the user doesn't exist, create a new record
+            const newGame = new GameModel({ user, savestate, subjectData });
+            await newGame.save();
+            return res.status(201).json(newGame);
+        }
     } catch (error) {
         return res.status(500).json({ error: 'Failed to save game data.' });
     }
 });
+
 
 
 app.get("/", (req, res) => {
