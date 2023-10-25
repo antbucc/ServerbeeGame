@@ -7,6 +7,9 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3001;
 
+
+
+
 // DB connection
 const uri = process.env.ATLAS_URI;
 
@@ -115,6 +118,7 @@ app.get('/api/games/:user', async (req, res) => {
 
 
 // Start the server
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`Server is running on port ${port}`);
 });
+
