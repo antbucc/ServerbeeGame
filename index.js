@@ -52,6 +52,12 @@ const GameModel = mongoose.model('Game', GameSchema);
 // Middleware to parse JSON data from the request body
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+});
+
+
 // POST endpoint to save game data for a user
 app.post('/api/games', async (req, res) => {
     const { user, savestate, subjectData } = req.body;
