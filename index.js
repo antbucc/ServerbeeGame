@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+const cors = require('cors');
 
 
 
@@ -49,8 +50,13 @@ const GameSchema = new mongoose.Schema({
 
 const GameModel = mongoose.model('Game', GameSchema);
 
+// Enable CORS for all routes
+app.use(cors());
+
+
 // Middleware to parse JSON data from the request body
 app.use(bodyParser.json());
+
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
