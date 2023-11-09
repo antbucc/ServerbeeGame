@@ -29,6 +29,9 @@ const subjectData = new mongoose.Schema({
     flowerNumber: Number,
     goodActions: Number,
     badActions: Number,
+    plasticStings: Number,
+    detergentStings: Number,
+    recycledRubbish: Number,
     preAnswers: [Number],
     postAnswers: [Number],
     numberOfParagraphsRead: Number,
@@ -37,8 +40,9 @@ const subjectData = new mongoose.Schema({
     knowledgeIndex: Number,
     tutorialDone: Boolean,
     finished: Boolean,
-    language: String,
+    language: String
 });
+
 
 // Create a MongoDB schema and model for a single game 
 const GameSchema = new mongoose.Schema({
